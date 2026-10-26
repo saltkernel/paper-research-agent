@@ -17,6 +17,7 @@ import ChatWindow from './components/ChatWindow';
 import ChatInput from './components/ChatInput';
 import DebugPanel from './components/DebugPanel';
 import CitationPanel from './components/CitationPanel';
+import ExportButton from './components/ExportButton';
 import ConversationSidebar from './components/ConversationSidebar';
 import GitHubLink from './components/GitHubLink';
 import DeployLink from './components/DeployLink';
@@ -138,7 +139,6 @@ function AppInner() {
   const [loading, setLoading]   = useState(false);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [debugEvents, setDebugEvents] = useState<RawSseEvent[]>([]);
-  const [rightPanelMode, setRightPanelMode] = useState<'citations' | 'debug'>('citations');
 
   // Conversation list (sidebar) state
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
@@ -318,7 +318,6 @@ function AppInner() {
 
   const handleSend = useCallback(async (text: string) => {
     initDoneRef.current = true;
-    setRightPanelMode('debug');
 
     const userMsg: Message = {
       id: crypto.randomUUID(),
@@ -411,7 +410,6 @@ function AppInner() {
         // hundreds of one-token rows.
         if (event.eventType === 'text_delta') {
           const delta = (event.data as { delta?: string } | null)?.delta ?? '';
-          setRightPanelMode('debug');
           setDebugEvents(prev => {
             const last = prev[prev.length - 1];
             if (last && last.eventType === 'text_delta') {
@@ -428,7 +426,6 @@ function AppInner() {
           });
           return;
         }
-        setRightPanelMode('debug');
         setDebugEvents(prev => [...prev, event]);
       },
 
@@ -497,7 +494,6 @@ function AppInner() {
     setActiveConversationId(newId);
     setMessages([]);
     setDebugEvents([]);
-    setRightPanelMode('citations');
     setLoading(false);
     initDoneRef.current = false;
   }, [refreshConversations]);
@@ -529,7 +525,6 @@ function AppInner() {
     localStorage.setItem(CONVERSATION_ID_STORAGE_KEY, id);
     conversationIdRef.current = id;
     setActiveConversationId(id);
-    setRightPanelMode('citations');
     void loadConversation(id);
   }, [loading, loadConversation]);
 
@@ -543,7 +538,6 @@ function AppInner() {
     setActiveConversationId(newId);
     setMessages([]);
     setDebugEvents([]);
-    setRightPanelMode('citations');
     initDoneRef.current = false;
     setHistoryLoading(false);
   }, [loading]);
@@ -579,7 +573,6 @@ function AppInner() {
       setActiveConversationId(newId);
       setMessages([]);
       setDebugEvents([]);
-      setRightPanelMode('citations');
       initDoneRef.current = false;
       setHistoryLoading(false);
     }
@@ -612,13 +605,28 @@ function AppInner() {
         <div className={styles.chatPanel}>
           <header className={styles.header}>
             <div className={styles.headerLeft}>
-              <span className={styles.logo}>⬡</span>
+              <svg
+                className={styles.logo}
+                viewBox="0 0 24 24"
+                width="26"
+                height="26"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 2.6l8.1 4.7v9.4L12 21.4l-8.1-4.7V7.3L12 2.6z" />
+              </svg>
               <div>
                 <p className={styles.title}>{t("app.title")}</p>
                 <p className={styles.subtitle}>{t("app.subtitle")}</p>
               </div>
             </div>
-            <ToolIndicators lamps={lamps} />
+            <div className={styles.headerRight}>
+              <ToolIndicators lamps={lamps} />
+              <ExportButton messages={messages} />
+            </div>
           </header>
 
           <div className={styles.chatWindowShell}>
@@ -632,16 +640,14 @@ function AppInner() {
           <ChatInput onSend={handleSend} onStop={handleStop} onClear={handleClearHistory} disabled={loading} />
         </div>
 
+        {/* 右栏上下分栏：上半「引用与出处」，下半「传输流」，两个常驻 */}
         <div className={styles.codePanel}>
-          {rightPanelMode === 'citations' ? (
-            <CitationPanel
-              messages={messages}
-              onShowDebug={() => setRightPanelMode('debug')}
-              debugActive={false}
-            />
-          ) : (
+          <div className={styles.panelSectionCitations}>
+            <CitationPanel messages={messages} />
+          </div>
+          <div className={styles.panelSectionDebug}>
             <DebugPanel events={debugEvents} onClear={() => setDebugEvents([])} />
-          )}
+          </div>
         </div>
       </div>
       <GitHubLink />

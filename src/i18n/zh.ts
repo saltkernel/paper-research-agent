@@ -54,6 +54,13 @@ const zh = {
   "aria.clearHistory": "清除历史",
   "aria.stopGeneration": "停止生成",
 
+  // Export PDF
+  "export.pdf": "导出 PDF",
+  "export.busy": "导出中…",
+  "export.hint": "导出所有查到的论文重点段落为 PDF",
+  "export.empty": "暂无可导出的内容，先和 Agent 对话吧",
+  "export.failed": "导出失败，请重试或查看控制台日志。",
+
   // Language toggle
   "lang.switch": "English",
 

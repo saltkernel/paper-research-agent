@@ -53,11 +53,9 @@ export function parseReferences(content: string): ParsedRef[] {
 
 interface Props {
   messages: Message[];
-  onShowDebug: () => void;
-  debugActive: boolean;
 }
 
-export default function CitationPanel({ messages, onShowDebug, debugActive }: Props) {
+export default function CitationPanel({ messages }: Props) {
   const refs = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i--) {
       const msg = messages[i];
@@ -74,13 +72,6 @@ export default function CitationPanel({ messages, onShowDebug, debugActive }: Pr
         <span className={styles.title}>引用与出处</span>
         <div className={styles.headRight}>
           {refs.length > 0 && <span className={styles.count}>{refs.length}</span>}
-          <button
-            className={`${styles.debugBtn} ${debugActive ? styles.debugBtnActive : ''}`}
-            onClick={onShowDebug}
-            title="查看传输流"
-          >
-            传输流
-          </button>
         </div>
       </div>
 

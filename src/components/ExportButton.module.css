@@ -1,0 +1,160 @@
+/* ═══════════════════════════════════════════════════════════
+   ExportButton — 顶栏「导出 PDF」+ 离屏导出文档排版
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 顶栏按钮：与工具灯芯片同风格的胶囊 ─────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-gold-dim);
+  background: var(--bg-elevated);
+  color: var(--accent-gold);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    transform var(--transition-fast);
+}
+.btn:hover:not(:disabled) {
+  background: var(--accent-gold-dim);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 10px var(--accent-gold-glow);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.label {
+  letter-spacing: 0.04em;
+}
+
+/* ── 离屏渲染舞台：移出视口但保持已渲染状态，供 html2canvas 截图 ── */
+.hiddenStage {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+  z-index: -1;
+  width: 760px;
+  pointer-events: none;
+}
+
+/* ── 导出文档排版：A4 纸感、学术风 ───────────────────────── */
+.doc {
+  width: 760px;
+  background: #ffffff;
+  color: #22303c;
+  font-family: 'Noto Serif SC', 'Songti SC', serif;
+  font-size: 13px;
+  line-height: 1.8;
+  padding: 8px 4px;
+}
+
+.docHeader {
+  border-bottom: 2px solid #1e4e6e;
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+.docTitle {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #1e4e6e;
+  margin: 0 0 6px;
+}
+.docMeta {
+  font-size: 11px;
+  color: #9aa0a8;
+  margin: 0;
+  font-family: 'DM Mono', Consolas, monospace;
+}
+
+.section {
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed #e3dfd4;
+  break-inside: auto;
+}
+.sectionNo {
+  font-size: 11px;
+  font-weight: 600;
+  color: #1e4e6e;
+  letter-spacing: 0.05em;
+  margin: 0 0 8px;
+  font-family: 'DM Mono', Consolas, monospace;
+}
+
+/* Markdown 内容基础排版（导出文档内的标题/表格/列表） */
+.doc h1, .doc h2, .doc h3 {
+  color: #1e4e6e;
+  margin: 14px 0 8px;
+  line-height: 1.5;
+}
+.doc h1 { font-size: 17px; }
+.doc h2 { font-size: 15px; }
+.doc h3 { font-size: 14px; }
+.doc p {
+  margin: 6px 0;
+  word-break: break-word;
+}
+.doc ul, .doc ol {
+  margin: 6px 0;
+  padding-left: 22px;
+}
+.doc li { margin: 3px 0; }
+.doc blockquote {
+  margin: 8px 0;
+  padding: 4px 12px;
+  border-left: 3px solid #1e4e6e;
+  background: #f6f4ee;
+  color: #5c6470;
+}
+.doc code {
+  font-family: 'DM Mono', Consolas, monospace;
+  font-size: 12px;
+  background: #f6f4ee;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.doc pre {
+  background: #f6f4ee;
+  padding: 10px 12px;
+  border-radius: 6px;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.doc pre code {
+  background: transparent;
+  padding: 0;
+}
+.doc table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 12px;
+}
+.doc th, .doc td {
+  border: 1px solid #e3dfd4;
+  padding: 6px 8px;
+  text-align: left;
+  word-break: break-word;
+}
+.doc th {
+  background: #f1efe7;
+  font-weight: 600;
+}
+.doc a {
+  color: #1e4e6e;
+  text-decoration: underline;
+  word-break: break-all;
+}

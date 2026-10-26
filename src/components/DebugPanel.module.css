@@ -1,11 +1,17 @@
+/* ═══════════════════════════════════════════════════════════
+   DebugPanel — 传输流（浅色学术纸感主题）
+   常驻于右栏下半部分，与「引用与出处」上下分栏。
+   ═══════════════════════════════════════════════════════════ */
+
 .panel {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
-  background: rgba(10, 10, 14, 0.92);
-  border: 1px solid rgba(31, 41, 51, 0.08);
-  border-radius: var(--radius-lg, 12px);
+  background: var(--bg-surface);
   overflow: hidden;
 }
 
@@ -14,9 +20,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 14px;
-  border-bottom: 1px solid rgba(31, 41, 51, 0.06);
-  background: rgba(31, 41, 51, 0.02);
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--bg-border);
   flex-shrink: 0;
 }
 
@@ -32,7 +37,7 @@
   height: 8px;
   border-radius: 50%;
   background: #22c55e;
-  box-shadow: 0 0 6px #22c55e88;
+  box-shadow: 0 0 6px #22c55e66;
   animation: pulse 2s ease infinite;
   flex-shrink: 0;
 }
@@ -43,45 +48,50 @@
 }
 
 .title {
+  font-family: var(--font-display);
   font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-primary, #e2e2e2);
-  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
   white-space: nowrap;
 }
 
 .count {
   font-size: 0.65rem;
-  color: var(--text-muted, #666);
-  background: rgba(31, 41, 51, 0.05);
-  padding: 2px 6px;
-  border-radius: 4px;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border: 1px solid var(--bg-border);
+  padding: 2px 7px;
+  border-radius: 999px;
   white-space: nowrap;
 }
 
 .clearBtn {
-  font-size: 0.65rem;
-  color: var(--text-secondary, #999);
-  background: rgba(31, 41, 51, 0.05);
-  border: 1px solid rgba(31, 41, 51, 0.1);
-  border-radius: 4px;
-  padding: 3px 8px;
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border: 1px solid var(--bg-border);
+  border-radius: 999px;
+  padding: 3px 10px;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  transition: color var(--transition-fast),
+              border-color var(--transition-fast),
+              background var(--transition-fast);
   flex-shrink: 0;
 }
 
 .clearBtn:hover {
-  background: rgba(31, 41, 51, 0.1);
-  color: var(--text-primary, #e2e2e2);
-  border-color: rgba(31, 41, 51, 0.16);
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+  background: #fff;
 }
 
 .body {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 8px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -94,16 +104,16 @@
   height: 100%;
   padding: 24px;
   font-size: 0.72rem;
-  color: var(--text-muted, #666);
+  color: var(--text-muted);
   text-align: center;
   line-height: 1.8;
 }
 
 .event {
-  border: 1px solid rgba(31, 41, 51, 0.06);
-  border-radius: 6px;
+  border: 1px solid var(--bg-border);
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  background: rgba(31, 41, 51, 0.02);
+  background: var(--bg-elevated);
   flex-shrink: 0;
 }
 
@@ -113,56 +123,56 @@
   justify-content: space-between;
   gap: 8px;
   padding: 4px 8px;
-  background: rgba(31, 41, 51, 0.03);
-  border-bottom: 1px solid rgba(31, 41, 51, 0.04);
+  background: rgba(30, 78, 110, 0.04);
+  border-bottom: 1px solid var(--bg-border);
 }
 
 .eventType {
   font-size: 0.65rem;
   font-weight: 600;
-  font-family: var(--font-mono, monospace);
-  padding: 1px 6px;
+  font-family: var(--font-mono);
+  padding: 1px 7px;
   border-radius: 3px;
   min-width: 0;
   overflow-wrap: anywhere;
 }
 
 .type_text_delta {
-  color: #60a5fa;
-  background: rgba(96, 165, 250, 0.1);
+  color: #1d5f9e;
+  background: rgba(96, 165, 250, 0.14);
 }
 
 .type_tool_called {
-  color: #fbbf24;
-  background: rgba(251, 191, 36, 0.1);
+  color: #92610a;
+  background: rgba(251, 191, 36, 0.16);
 }
 
 .type_done {
-  color: #22c55e;
-  background: rgba(34, 197, 94, 0.1);
+  color: #177a3d;
+  background: rgba(34, 197, 94, 0.13);
 }
 
 .type_error {
-  color: #f87171;
-  background: rgba(248, 113, 113, 0.1);
+  color: #b23434;
+  background: rgba(248, 113, 113, 0.13);
 }
 
 .type_debug_msg,
 .type_raw_response_event,
 .type_run_item_stream_event {
-  color: #a78bfa;
-  background: rgba(167, 139, 250, 0.1);
+  color: #6d4fc0;
+  background: rgba(167, 139, 250, 0.14);
 }
 
 .type_unknown {
-  color: #c084fc;
-  background: rgba(192, 132, 252, 0.1);
+  color: #8b4fc9;
+  background: rgba(192, 132, 252, 0.14);
 }
 
 .eventTime {
   font-size: 0.6rem;
-  color: var(--text-muted, #555);
-  font-family: var(--font-mono, monospace);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -171,9 +181,9 @@
   margin: 0;
   padding: 6px 8px;
   font-size: 0.68rem;
-  font-family: var(--font-mono, monospace);
-  color: var(--text-secondary, #aaa);
-  line-height: 1.5;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  line-height: 1.55;
   white-space: pre-wrap;
   word-break: break-word;
   overflow-wrap: anywhere;

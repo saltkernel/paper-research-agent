@@ -60,7 +60,7 @@
   to { transform: rotate(360deg); }
 }
 
-/* ── Right: citation / debug panel ───────────────────────── */
+/* ── Right: citation / debug panel（上下分栏，两个常驻） ──── */
 .codePanel {
   flex: 0 0 320px;
   display: flex;
@@ -70,6 +70,21 @@
   overflow: hidden;
   border-left: 1px solid var(--bg-border);
   background: var(--bg-surface);
+}
+
+/* 上半：引用与出处 */
+.panelSectionCitations {
+  flex: 0 1 46%;
+  min-height: 140px;
+  display: flex;
+}
+
+/* 下半：传输流 */
+.panelSectionDebug {
+  flex: 1 1 54%;
+  min-height: 160px;
+  display: flex;
+  border-top: 1px solid var(--bg-border);
 }
 
 /* ── Header (inside chat panel) ───────────────────────────── */
@@ -88,12 +103,19 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+/* 用 inline SVG 取代 ⬡ 字形：字形在部分字体回退下左顶点会被裁掉 */
 .logo {
-  font-size: 1.6rem;
   color: var(--accent-gold);
-  line-height: 1;
   flex-shrink: 0;
+  filter: drop-shadow(0 0 8px var(--accent-gold-glow));
 }
 .title {
   font-family: var(--font-display);

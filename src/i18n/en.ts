@@ -54,6 +54,13 @@ const en = {
   "aria.clearHistory": "Clear history",
   "aria.stopGeneration": "Stop generation",
 
+  // Export PDF
+  "export.pdf": "Export PDF",
+  "export.busy": "Exporting…",
+  "export.hint": "Export all retrieved paper passages as a PDF",
+  "export.empty": "Nothing to export yet — chat with the agent first",
+  "export.failed": "Export failed. Please retry or check the console log.",
+
   // Language toggle
   "lang.switch": "中文",
 
