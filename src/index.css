@@ -49,6 +49,10 @@ html, body, #root {
   font-family: var(--font-mono);
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
+  /* 移动端：禁止横屏/旋转时字号被浏览器自动放大 */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overscroll-behavior: none;
 }
 
 /* scrollbar */
@@ -108,4 +112,42 @@ html, body, #root {
   opacity: 0.4;
   margin: 0 3px;
   user-select: none;
+}
+
+/* 内联变体：手机端放进 header 里随流排版，不再 fixed 悬浮（否则会压住顶栏按钮） */
+.lang-toggle--inline {
+  position: static;
+  top: auto;
+  right: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   移动端（≤768px）：抽屉 + 底部面板 + 触控尺寸
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* 固定在右上角的语言开关会盖住顶栏，手机上改用 header 内的内联版本 */
+  .lang-toggle {
+    display: none;
+  }
+  .lang-toggle--inline {
+    display: flex;
+    padding: 4px 10px;
+  }
+  .lang-toggle--inline .lang-toggle__label {
+    font-size: 11px;
+  }
+  .lang-toggle--inline .lang-toggle__label--active {
+    font-size: 13px;
+  }
+
+  /* GitHub / 一键部署两个悬浮徽标会压住发送键，手机端直接不显示 */
+  .floating-badge {
+    display: none !important;
+  }
+
+  /* 手机上滚动条更细，避免吃内容宽度 */
+  ::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+  }
 }

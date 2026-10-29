@@ -38,6 +38,17 @@
   letter-spacing: 0.04em;
 }
 
+/* Phone（≤768px）：顶栏空间紧张，只留图标 */
+@media (max-width: 768px) {
+  .btn {
+    padding: 6px 9px;
+    gap: 0;
+  }
+  .label {
+    display: none;
+  }
+}
+
 /* ── 离屏渲染舞台：移出视口但保持已渲染状态，供 html2canvas 截图 ── */
 .hiddenStage {
   position: fixed;

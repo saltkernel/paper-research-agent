@@ -28,3 +28,22 @@
   from { opacity: 0; transform: translateY(-6px) scale(.9); }
   to   { opacity: 1; transform: translateY(0)    scale(1);  }
 }
+
+/* Phone（≤768px）：指示灯只留图标，整排可横向滚动，永不换行挤压按钮 */
+@media (max-width: 768px) {
+  .wrapper {
+    flex: 1 1 auto;
+    min-width: 0;
+    align-items: stretch;
+  }
+  .row {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .row::-webkit-scrollbar {
+    display: none;
+  }
+}

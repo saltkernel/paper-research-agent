@@ -1,7 +1,9 @@
 .shell {
   position: relative;
   height: 100vh;
-  width: 100vw;
+  /* 移动端浏览器地址栏收起/展开时 100vh 会跳，dvh 跟随可视区高度 */
+  height: 100dvh;
+  width: 100%;
   display: flex;
   align-items: stretch;
   justify-content: center;
@@ -14,8 +16,8 @@
   position: relative;
   z-index: 1;
   display: flex;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   background: var(--bg-surface);
 }
@@ -111,6 +113,75 @@
   gap: 14px;
   min-width: 0;
 }
+/* 标题文字块：允许收缩，长标题不撑破顶栏 */
+.headerText {
+  min-width: 0;
+}
+
+/* 手机端专用控件（桌面端 display:none，由下方媒体查询打开） */
+.menuBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--bg-border);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+}
+.menuBtn:active {
+  transform: scale(0.94);
+}
+.headerLang {
+  display: none;
+  align-items: center;
+  flex-shrink: 0;
+}
+.panelBtn {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-gold-dim);
+  background: var(--bg-elevated);
+  color: var(--accent-gold);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.panelBtn:active {
+  transform: scale(0.96);
+}
+.panelCount {
+  min-width: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--accent-gold);
+  color: #fff;
+  font-size: 0.6rem;
+  line-height: 15px;
+  text-align: center;
+}
+
+/* 抽屉 / 上拉面板的遮罩层：手机端才出现 */
+.drawerBackdrop,
+.sheetBackdrop {
+  display: none;
+}
+
+/* 底部面板自带的头部（抽屉式收起用）：手机端才出现 */
+.sheetHead {
+  display: none;
+}
 /* 用 inline SVG 取代 ⬡ 字形：字形在部分字体回退下左顶点会被裁掉 */
 .logo {
   color: var(--accent-gold);
@@ -141,5 +212,162 @@
 @media (max-width: 900px) {
   .codePanel {
     display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Phone（≤768px）
+   三栏 → 单栏：
+     · 会话列表   → 左侧抽屉（ConversationSidebar 内部实现滑动）
+     · 右栏引用流 → 底部上拉面板（这里重定位 codePanel）
+     · 顶栏       → 两行：汉堡+标题+语言 / 工具灯+引用+导出
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .header {
+    padding: 10px 12px 8px;
+    gap: 8px 10px;
+    align-items: center;
+  }
+  .headerLeft {
+    flex: 1 1 auto;
+    gap: 8px;
+  }
+  .logo {
+    width: 22px;
+    height: 22px;
+  }
+  .title {
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .subtitle {
+    display: none;
+  }
+  .headerLang {
+    display: flex;
+  }
+  .headerRight {
+    /* 工具灯 + 引用 + 导出换行占满第二行，左右对齐 */
+    flex: 1 1 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .menuBtn {
+    display: inline-flex;
+  }
+  .panelBtn {
+    display: inline-flex;
+  }
+
+  /* ── 右栏 → 底部上拉面板 ─────────────────────────────── */
+  .codePanel {
+    display: flex;
+    position: fixed;
+    inset: auto 0 0 0;
+    height: 80vh;
+    height: 80dvh;
+    flex: 0 0 auto;
+    z-index: 280;
+    border-left: none;
+    border-top: 1px solid var(--bg-border);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -10px 40px rgba(31, 41, 51, 0.22);
+    transform: translateY(102%);
+    visibility: hidden;
+    transition: transform 280ms cubic-bezier(.22, .9, .3, 1),
+                visibility 0s linear 280ms;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .codePanelOpen {
+    transform: translateY(0);
+    visibility: visible;
+    transition: transform 280ms cubic-bezier(.22, .9, .3, 1),
+                visibility 0s linear 0s;
+  }
+
+  .panelSectionCitations {
+    flex: 0 1 46%;
+    min-height: 0;
+  }
+  .panelSectionDebug {
+    flex: 1 1 54%;
+    min-height: 0;
+  }
+
+  .sheetHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--bg-border);
+    background: var(--bg-surface);
+    flex-shrink: 0;
+  }
+  .sheetTitle {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text-primary);
+  }
+  .sheetClose {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--bg-border);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+  .sheetClose:active {
+    transform: scale(0.94);
+  }
+
+  /* ── 遮罩 ─────────────────────────────────────────────── */
+  .drawerBackdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 290;
+    background: rgba(34, 48, 60, 0.42);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 240ms ease;
+  }
+  .drawerBackdropShow {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .sheetBackdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 270;
+    background: rgba(34, 48, 60, 0.38);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 240ms ease;
+  }
+  .sheetBackdropShow {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* 超窄屏（≤360px）再压一档，保证 4 个工具灯 + 两个按钮仍在一行内 */
+@media (max-width: 380px) {
+  .title {
+    font-size: 0.82rem;
+  }
+  .headerRight {
+    gap: 6px;
   }
 }

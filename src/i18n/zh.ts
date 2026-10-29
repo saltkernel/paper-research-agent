@@ -53,6 +53,12 @@ const zh = {
   "aria.send": "发送",
   "aria.clearHistory": "清除历史",
   "aria.stopGeneration": "停止生成",
+  "aria.openConversations": "会话列表",
+  "aria.panel": "引用与传输流",
+  "aria.close": "关闭",
+
+  // Mobile panel entry (≤768px 顶栏按钮)
+  "panel.title": "引用与传输流",
 
   // Export PDF
   "export.pdf": "导出 PDF",

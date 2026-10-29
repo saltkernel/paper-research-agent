@@ -5,6 +5,8 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Empty state */
@@ -95,4 +97,42 @@
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Phone（≤768px）
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .window {
+    padding: 16px 12px 8px;
+    gap: 12px;
+  }
+  .empty {
+    padding-bottom: 24px;
+    gap: 8px;
+  }
+  .emptyIcon {
+    font-size: 2.4rem;
+  }
+  .emptyTitle {
+    font-size: .95rem;
+  }
+  .emptyHint {
+    font-size: .78rem;
+    line-height: 1.65;
+    padding: 0 6px;
+    max-width: 100%;
+  }
+  .emptyFeatures {
+    font-size: .66rem;
+    letter-spacing: .04em;
+  }
+  .typingRow {
+    gap: 7px;
+  }
+  .avatar {
+    width: 26px;
+    height: 26px;
+    font-size: .75rem;
+  }
 }

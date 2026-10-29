@@ -188,3 +188,22 @@
   word-break: break-word;
   overflow-wrap: anywhere;
 }
+
+/* Phone（≤768px） */
+@media (max-width: 768px) {
+  .header {
+    padding: 10px 12px 8px;
+  }
+  .body {
+    padding: 8px 10px;
+    gap: 5px;
+  }
+  .eventData {
+    padding: 5px 7px;
+    font-size: 0.66rem;
+  }
+  .empty {
+    padding: 16px;
+    font-size: 0.7rem;
+  }
+}

@@ -53,6 +53,12 @@ const en = {
   "aria.send": "Send",
   "aria.clearHistory": "Clear history",
   "aria.stopGeneration": "Stop generation",
+  "aria.openConversations": "Conversations",
+  "aria.panel": "Citations & stream",
+  "aria.close": "Close",
+
+  // Mobile panel entry (header button, ≤768px)
+  "panel.title": "Citations",
 
   // Export PDF
   "export.pdf": "Export PDF",

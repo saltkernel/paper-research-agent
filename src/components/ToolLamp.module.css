@@ -161,3 +161,17 @@
   60%  { opacity: 1;  }
   100% { opacity: 1;  }
 }
+
+/* ── Phone（≤768px）：只留图标，文案移到 title 提示 ──────── */
+@media (max-width: 768px) {
+  .lamp {
+    padding: 4px 7px;
+    gap: 0;
+  }
+  .icon {
+    font-size: .9rem;
+  }
+  .label {
+    display: none;
+  }
+}

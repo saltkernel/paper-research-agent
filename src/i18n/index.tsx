@@ -48,10 +48,15 @@ export function useT() {
   return useContext(I18nContext);
 }
 
-export function LangToggle() {
+export function LangToggle({ inline = false }: { inline?: boolean }) {
   const { lang, toggle } = useT();
   return (
-    <button className="lang-toggle" onClick={toggle} title="Switch Language" aria-label="Switch Language">
+    <button
+      className={`lang-toggle ${inline ? "lang-toggle--inline" : ""}`}
+      onClick={toggle}
+      title="Switch Language"
+      aria-label="Switch Language"
+    >
       <span className={`lang-toggle__label ${lang === "zh" ? "lang-toggle__label--active" : ""}`}>zh</span>
       <span className="lang-toggle__sep">/</span>
       <span className={`lang-toggle__label ${lang === "en" ? "lang-toggle__label--active" : ""}`}>en</span>

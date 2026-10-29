@@ -190,3 +190,48 @@
     animation: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Phone（≤768px）
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .row {
+    gap: 7px;
+  }
+  .avatar {
+    width: 26px;
+    height: 26px;
+    font-size: .72rem;
+  }
+  .userAvatar {
+    font-size: .58rem;
+  }
+  .bubble {
+    max-width: 85%;
+    padding: 10px 12px 22px;
+    font-size: .86rem;
+    line-height: 1.7;
+  }
+  /* 表格在窄屏会撑破气泡，改成块级横向滚动 */
+  .markdown :global(table) {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    font-size: 0.9em;
+  }
+  .markdown :global(pre) {
+    padding: 8px 10px;
+  }
+  .markdown :global(ul),
+  .markdown :global(ol) {
+    padding-left: 1.4em;
+  }
+  .markdown :global(code) {
+    word-break: break-all;
+  }
+  .time {
+    right: 10px;
+    bottom: 5px;
+  }
+}

@@ -16,7 +16,7 @@ import ToolIndicators from './components/ToolIndicators';
 import ChatWindow from './components/ChatWindow';
 import ChatInput from './components/ChatInput';
 import DebugPanel from './components/DebugPanel';
-import CitationPanel from './components/CitationPanel';
+import CitationPanel, { parseReferences } from './components/CitationPanel';
 import ExportButton from './components/ExportButton';
 import ConversationSidebar from './components/ConversationSidebar';
 import GitHubLink from './components/GitHubLink';
@@ -140,6 +140,15 @@ function AppInner() {
   const [historyLoading, setHistoryLoading] = useState(true);
   const [debugEvents, setDebugEvents] = useState<RawSseEvent[]>([]);
 
+  /**
+   * 移动端布局状态（≤768px 生效，桌面端 CSS 里这两个开关无副作用）：
+   * - sidebarOpen：会话列表从左侧滑出，带半透明遮罩
+   * - panelOpen：右栏「引用 + 传输流」变成底部上拉面板
+   * 两者互斥，避免遮罩叠两层。
+   */
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
+
   // Conversation list (sidebar) state
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [conversationsLoading, setConversationsLoading] = useState(true);
@@ -169,6 +178,28 @@ function AppInner() {
       }))
     );
   }, [t]);
+
+  /** 手机端：ESC 关掉抽屉 / 底部面板，物理返回键之外多一条退路 */
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setSidebarOpen(false);
+      setPanelOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
+
+  /** 顶栏「引用」按钮上的角标数量，与右栏 CitationPanel 用同一套解析 */
+  const citationCount = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const msg = messages[i];
+      if (msg.role !== 'assistant') continue;
+      const parsed = parseReferences(msg.content);
+      if (parsed.length) return parsed.length;
+    }
+    return 0;
+  }, [messages]);
 
   // Persist a UI snapshot of the current conversation's messages to IndexedDB
   // (debounced) so a refresh restores instantly without hitting /history.
@@ -519,6 +550,7 @@ function AppInner() {
 
   /** User clicked a conversation in the sidebar. */
   const handleSelectConversation = useCallback((id: string) => {
+    setSidebarOpen(false);   // 手机端：选完会话自动收起抽屉
     if (loading) return;
     if (id === conversationIdRef.current) return;
 
@@ -530,6 +562,7 @@ function AppInner() {
 
   /** User clicked "New chat" in the sidebar. */
   const handleCreateConversation = useCallback(() => {
+    setSidebarOpen(false);   // 手机端：新建后收起抽屉，回到输入区
     if (loading) return;
 
     const newId = crypto.randomUUID();
@@ -596,6 +629,8 @@ function AppInner() {
           loadingMore={conversationsLoadingMore}
           hasMore={sidebarHasMore}
           disabled={loading}
+          mobileOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
           onSelect={handleSelectConversation}
           onCreate={handleCreateConversation}
           onLoadMore={handleLoadMoreConversations}
@@ -605,6 +640,21 @@ function AppInner() {
         <div className={styles.chatPanel}>
           <header className={styles.header}>
             <div className={styles.headerLeft}>
+              {/* 手机端才出现：把会话列表拉出来 */}
+              <button
+                type="button"
+                className={styles.menuBtn}
+                onClick={() => {
+                  setPanelOpen(false);
+                  setSidebarOpen(v => !v);
+                }}
+                aria-label={t('aria.openConversations')}
+                aria-expanded={sidebarOpen}
+              >
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                  <path d="M4 7h16M4 12h16M4 17h10" />
+                </svg>
+              </button>
               <svg
                 className={styles.logo}
                 viewBox="0 0 24 24"
@@ -618,13 +668,36 @@ function AppInner() {
               >
                 <path d="M12 2.6l8.1 4.7v9.4L12 21.4l-8.1-4.7V7.3L12 2.6z" />
               </svg>
-              <div>
+              <div className={styles.headerText}>
                 <p className={styles.title}>{t("app.title")}</p>
                 <p className={styles.subtitle}>{t("app.subtitle")}</p>
               </div>
             </div>
+
+            {/* 手机端：内联语言开关（桌面端的悬浮开关在 index.css 里被隐藏） */}
+            <div className={styles.headerLang}>
+              <LangToggle inline />
+            </div>
+
             <div className={styles.headerRight}>
               <ToolIndicators lamps={lamps} />
+              {/* 手机端才出现：上拉右栏的引用 / 传输流 */}
+              <button
+                type="button"
+                className={styles.panelBtn}
+                onClick={() => {
+                  setSidebarOpen(false);
+                  setPanelOpen(true);
+                }}
+                aria-label={t('aria.panel')}
+              >
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M4 5h16v14H4z" />
+                  <path d="M4 10h16" />
+                </svg>
+                <span>{t('panel.title')}</span>
+                {citationCount > 0 && <span className={styles.panelCount}>{citationCount}</span>}
+              </button>
               <ExportButton messages={messages} />
             </div>
           </header>
@@ -640,8 +713,22 @@ function AppInner() {
           <ChatInput onSend={handleSend} onStop={handleStop} onClear={handleClearHistory} disabled={loading} />
         </div>
 
-        {/* 右栏上下分栏：上半「引用与出处」，下半「传输流」，两个常驻 */}
-        <div className={styles.codePanel}>
+        {/* 右栏上下分栏：上半「引用与出处」，下半「传输流」，两个常驻。
+            手机端（≤768px）变成底部上拉面板，由 panelOpen 控制。 */}
+        <div className={`${styles.codePanel} ${panelOpen ? styles.codePanelOpen : ''}`}>
+          <div className={styles.sheetHead}>
+            <span className={styles.sheetTitle}>{t('panel.title')}</span>
+            <button
+              type="button"
+              className={styles.sheetClose}
+              onClick={() => setPanelOpen(false)}
+              aria-label={t('aria.close')}
+            >
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
+          </div>
           <div className={styles.panelSectionCitations}>
             <CitationPanel messages={messages} />
           </div>
@@ -650,6 +737,19 @@ function AppInner() {
           </div>
         </div>
       </div>
+
+      {/* 手机端遮罩层：抽屉 / 上拉面板共用，点空白处关闭 */}
+      <div
+        className={`${styles.drawerBackdrop} ${sidebarOpen ? styles.drawerBackdropShow : ''}`}
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden="true"
+      />
+      <div
+        className={`${styles.sheetBackdrop} ${panelOpen ? styles.sheetBackdropShow : ''}`}
+        onClick={() => setPanelOpen(false)}
+        aria-hidden="true"
+      />
+
       <GitHubLink />
       <DeployLink />
     </div>

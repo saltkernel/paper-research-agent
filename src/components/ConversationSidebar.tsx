@@ -10,6 +10,9 @@ interface Props {
   loadingMore: boolean;
   hasMore: boolean;
   disabled: boolean;       // Disabled while a stream is running
+  /** 手机端：抽屉是否展开（桌面端忽略） */
+  mobileOpen: boolean;
+  onClose: () => void;
   onSelect: (id: string) => void;
   onCreate: () => void;
   onLoadMore: () => void;
@@ -67,6 +70,8 @@ export default function ConversationSidebar({
   loadingMore,
   hasMore,
   disabled,
+  mobileOpen,
+  onClose,
   onSelect,
   onCreate,
   onLoadMore,
@@ -90,12 +95,26 @@ export default function ConversationSidebar({
   };
 
   return (
-    <aside className={styles.sidebar} aria-label={t('sidebar.label')}>
+    <aside
+      className={`${styles.sidebar} ${mobileOpen ? styles.sidebarOpen : ''}`}
+      aria-label={t('sidebar.label')}
+    >
       <div className={styles.head}>
         <span className={styles.brand}>
           <span className={styles.brandDot}>⬡</span>
           {t('sidebar.title')}
         </span>
+        {/* 手机端抽屉的关闭按钮（桌面端隐藏） */}
+        <button
+          type="button"
+          className={styles.closeBtn}
+          onClick={onClose}
+          aria-label={t('aria.close')}
+        >
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
         <button
           type="button"
           className={styles.newBtn}
